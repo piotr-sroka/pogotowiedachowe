@@ -13,7 +13,9 @@
     "core-js": "^3.8.3",
     "nuxt": "^2.14.12",
     "vue-router": "^3.5.1",
-    "vue-scroll": "^2.1.13"
+    "vue-scroll": "^2.1.13",
+    "vue-scrollto": "^2.20.0",
+    "vue2-perfect-scrollbar": "^1.5.0"
   },
   "devDependencies": {
     "eslint-config-prettier": "^7.2.0",

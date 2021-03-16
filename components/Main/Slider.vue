@@ -12,7 +12,7 @@ export default {
   data: function () {
     return {
       currentSlideNumber: 0,
-      sliderTimer: 2,
+      sliderTimer: 10,
       isChanging: false,
     }
   },

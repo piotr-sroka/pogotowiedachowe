@@ -35,10 +35,11 @@ header {
   width: 100%;
   background-color: #333645;
   z-index: 9999;
+  /* transition: all .2s linear; */
 }
 .sticky header {
-  position: fixed;
-  top: 0;
+  /* position: fixed; */
+  /* top: 0; */
 }
 .header-content {
   display: flex;

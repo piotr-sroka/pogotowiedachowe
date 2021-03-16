@@ -1,4 +1,6 @@
 import Vue from 'vue'
-import vuescroll from 'vue-scroll'
+import vuescrollto from 'vue-scrollto'
 
-Vue.use(vuescroll)
+Vue.use(vuescrollto, {
+  easing: 'ease',
+})

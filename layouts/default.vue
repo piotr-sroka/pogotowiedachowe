@@ -18,6 +18,9 @@ html {
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
+body.noscroll {
+  overflow: hidden;
+}
 *,
 *::before,
 *::after {
@@ -33,6 +36,9 @@ a, a:link, a:active, a:hover {
   color: #fafafa;
 }
 
+img::selection {
+  background-color: transparent;
+}
 .button--green {
   display: inline-block;
   border-radius: 4px;
@@ -61,12 +67,15 @@ a, a:link, a:active, a:hover {
   color: #fff;
   background-color: #35495e;
 }
+.page-container {
+  /* transition: all .2s linear; */
+}
 .page-container.sticky {
-  padding-top: 240px;
+  /* padding-top: 240px; */
 }
 @media screen and (max-width: 860px) {
   .page-container.sticky {
-    padding-top: 120px;
+    /* padding-top: 120px; */
   }
 }
 </style>
