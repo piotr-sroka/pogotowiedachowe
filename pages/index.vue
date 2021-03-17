@@ -28,7 +28,7 @@ export default {
   },
   beforeCreate() {
     axios
-      .get('/data/staticData.json')
+      .get('data/staticData.json')
       .then((res) => {
         this.portfolio = res.data.portfolio;
       })

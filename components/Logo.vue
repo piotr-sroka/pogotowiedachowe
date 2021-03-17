@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="{ path: '/' }">
-    <img class="NuxtLogo" src="/images/logo.svg">
+    <img class="NuxtLogo" src="images/logo.svg">
   </nuxt-link>
 </template>
 

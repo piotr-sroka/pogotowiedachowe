@@ -4,7 +4,6 @@
       <h4>KONTAKT</h4>
       <ShortContact />
       <div>
-        <!-- <img class="icon" src="/images/address.svg" alt=""> -->
         <p class="contact-address">ul. Bohaterów Westerplatte 29, 41-608 Świętochłowice</p>
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2547.9104305071055!2d18.91010861572647!3d50.3122635794566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4716d2bd9248f0bf%3A0x3df0ac64fb4cd4b8!2sBohater%C3%B3w%20Westerplatte%2029%2C%2041-608%20%C5%9Awi%C4%99toch%C5%82owice!5e0!3m2!1spl!2spl!4v1615215564240!5m2!1spl!2spl"
