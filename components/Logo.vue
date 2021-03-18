@@ -1,14 +1,22 @@
 <template>
-  <nuxt-link :to="{ path: '/' }">
+  <nuxt-link :to="{ path: $route.path === '/admin' ? '/admin' : '/' }">
     <img class="NuxtLogo" src="images/logo.svg">
   </nuxt-link>
 </template>
+<script>
+export default {
+  mounted() {
+    console.log(this.$route)
+  }
+}
+</script>
 
 <style>
 .NuxtLogo {
   animation: 1s appear;
   margin: 20px;
   height: 80px;
+  max-width: 100%;
 }
 
 @keyframes appear {

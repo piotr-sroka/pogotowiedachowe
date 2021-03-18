@@ -73,6 +73,13 @@ img::selection {
 .page-container.sticky {
   /* padding-top: 240px; */
 }
+textarea {
+  transition: all .2s ease-out;
+}
+textarea:focus {
+  outline: none;
+  border-color: #ffaa06;
+}
 @media screen and (max-width: 860px) {
   .page-container.sticky {
     /* padding-top: 120px; */

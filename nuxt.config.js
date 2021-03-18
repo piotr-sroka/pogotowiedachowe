@@ -2,7 +2,7 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
   router: {
-    base: '/pogotowiedachowe.github.io/',
+    base: '/',
   },
   ssr: false,
 
@@ -44,7 +44,49 @@ export default {
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['vue-scrollto/nuxt', '@nuxtjs/axios'],
+  modules: [
+    'vue-scrollto/nuxt',
+    '@nuxtjs/axios',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: 'AIzaSyBaIlPUMrqFwfoje0b6rxZpivHIVsgUk9E',
+          authDomain: 'pogotowiedachowe-com.firebaseapp.com',
+          databaseURL:
+            'https://pogotowiedachowe-com-default-rtdb.europe-west1.firebasedatabase.app',
+          projectId: 'pogotowiedachowe-com',
+          storageBucket: 'pogotowiedachowe-com.appspot.com',
+          messagingSenderId: '603453300705',
+          appId: '1:603453300705:web:8d2c6c9852e603d505fca0',
+          measurementId: 'G-LQN10971RH',
+          onFirebaseHosting: true,
+        },
+        services: {
+          database: {
+            ssr: true,
+          },
+          firestore: {
+            ssr: true,
+          },
+          auth: {
+            ssr: true,
+          },
+        },
+      },
+    ],
+    [
+      'nuxt-fontawesome',
+      {
+        imports: [
+          {
+            set: '@fortawesome/free-solid-svg-icons',
+            icons: ['fas'],
+          }
+        ],
+      },
+    ],
+  ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},

@@ -1,8 +1,12 @@
 <template>
   <div class="slider" :style="sliderStyle">
     <div class="slide" :class="isChanging ? 'slide-changing' : ''">
-      <h3 class="slide-headline">{{ currentSlide.headline.replace(/-/gi, "&#8209;") }}</h3>
-      <p class="slide-description">{{ currentSlide.description.replace(/-/gi, "&#8209;") }}</p>
+      <h3 class="slide-headline">
+        {{ currentSlide.headline.replace(/-/gi, '&#8209;') }}
+      </h3>
+      <p class="slide-description">
+        {{ currentSlide.description.replace(/-/gi, '&#8209;') }}
+      </p>
     </div>
   </div>
 </template>
@@ -40,6 +44,21 @@ export default {
       setTimeout(() => {
         this.changeSlide()
       }, this.sliderTimer * 1000 + 400)
+    },
+    addPortfolio() {
+      this.$fire.firestore
+        .collection('portfolio')
+        .add({
+          title: 'Title added to DB',
+          description: 'Description from DB',
+          images: ['https://picsum.photos/1920/1080'],
+        })
+        .then((res) => {
+          console.log('ITEM SAVED ', res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
   },
   mounted() {
@@ -80,12 +99,13 @@ export default {
 .slide.slide-changing .slide-description {
   transform: translateY(30px);
 }
-.slide-headline, .slide-description {
+.slide-headline,
+.slide-description {
   padding: 12px 24px;
   max-width: 720px;
   text-align: center;
   line-height: 1.2;
-  transition: transform .4s ease-in-out;
+  transition: transform 0.4s ease-in-out;
 }
 .slide-headline {
   font-size: 2em;
