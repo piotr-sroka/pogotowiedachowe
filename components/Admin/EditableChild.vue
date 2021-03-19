@@ -1,19 +1,39 @@
 <template>
   <div class="editable-child" :class="editMode ? 'edit-mode' : ''">
-    <img class="child-image" :src="editedChild.image" alt="" />
+    <div
+      class="child-images"
+      v-if="editedChild.images && editedChild.images.length"
+    >
+      <img
+        class="child-image"
+        v-for="image in editedChild.images"
+        :src="image"
+        :key="image"
+        alt=""
+      />
+    </div>
     <div v-if="!editMode">
-      <h4 class="child-title" :key="editedChild.title">
+      <h4 class="child-title" :key="editedChild.title" v-if="editedChild.title">
         {{ editedChild.title }}
       </h4>
-      <p class="child-description" :key="editedChild.description">
+      <p
+        class="child-description"
+        :key="editedChild.description"
+        v-if="editedChild.description"
+      >
         {{ editedChild.description }}
       </p>
     </div>
     <div v-else>
-      <textarea class="child-title" v-model="editedChild.title"></textarea>
+      <textarea
+        class="child-title"
+        v-model="editedChild.title"
+        v-if="editedChild.title"
+      ></textarea>
       <textarea
         class="child-description"
         v-model="editedChild.description"
+        v-if="editedChild.description"
       ></textarea>
       <div class="action-buttons">
         <button class="action-button action-cancel" @click="discardChanges">
@@ -21,7 +41,7 @@
         </button>
         <button
           class="action-button action-save"
-          @click="() => saveContent({...editedChild})"
+          @click="saveChanges"
         >
           Zapisz
         </button>
@@ -55,6 +75,10 @@ export default {
     }
   },
   methods: {
+    saveChanges() {
+      this.saveContent({ ...this.editedChild });
+      this.editMode = false;
+    },
     discardChanges() {
       this.editedChild = { ...this.editableChild }
       this.editMode = false
@@ -80,8 +104,8 @@ export default {
 }
 .options {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 40px;
+  right: 40px;
 }
 .option-btn {
   background-color: transparent;
@@ -107,6 +131,7 @@ export default {
 }
 textarea {
   background-color: rgba(255, 255, 255, 0.3);
+  display: block;
 }
 .action-buttons {
   max-width: 720px;

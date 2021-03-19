@@ -12,26 +12,23 @@
           "
           v-for="element in editableElements"
           :key="element.name"
-          @click="activeElement = element"
+          @click="loadActiveElement(element)"
         >
           {{ element.title }}
         </li>
       </ul>
     </div>
     <div class="active-element" v-if="activeElement">
-      <header class="active-element_title">{{ activeElement.title }}</header>
-      <div class="active-element_content" v-if="activeElement.content">
-        <EditableContent
-          :editableContent="activeElement.content"
-          :saveContent="
-            (newContent) => saveContent(activeElement.name, newContent)
-          "
-        />
-      </div>
+      <header class="active-element_title">
+        <h4>{{ activeElement.title }}</h4>
+        <button class="action-btn add" title="Dodaj">
+          <font-awesome-icon :icon="['fas', 'plus']" />
+        </button>
+      </header>
       <div class="active-element_childrens" v-if="activeElement.children">
         <EditableChild
-          v-for="(child, index) in activeElement.children"
-          :key="index"
+          v-for="child in activeElement.children"
+          :key="child.description"
           :editableChild="child"
           :saveContent="
             (newContent) => saveContent(activeElement.name, newContent, 'child')
@@ -43,13 +40,11 @@
 </template>
 <script>
 import Logo from '../components/Logo'
-import EditableContent from '../components/Admin/EditableContent'
 import EditableChild from '../components/Admin/EditableChild'
 
 export default {
   components: {
     Logo,
-    EditableContent,
     EditableChild,
   },
   data() {
@@ -59,39 +54,51 @@ export default {
     }
   },
   methods: {
+    async loadActiveElement(element) {
+      const activeElementDocId = await this.$fire.firestore
+        .collection('site-content')
+        .where('name', '==', element.name)
+        .get()
+        .then((res) => res.docs[0].id)
+      const elementChildren = await this.$fire.firestore
+        .collection('site-content')
+        .doc(activeElementDocId)
+        .collection('children')
+        .orderBy('displayOrder', 'asc')
+        .get()
+        .then((res) => res.docs)
+      element.children = elementChildren.map((child) => {
+        return child.data()
+      })
+      this.activeElement = element
+    },
     async saveContent(elementName, content, contentType) {
-      let contentToUpdate = this.editableElements
-      const docToUpdate = await this.$fire.firestore
+      const docId = await this.$fire.firestore
         .collection('site-content')
         .where('name', '==', elementName)
         .get()
+        .then((res) => res.docs[0].id)
+      const childToUpdate = await this.$fire.firestore
+        .collection('site-content')
+        .doc(docId)
+        .collection('children')
+        .get()
         .then((res) => {
-          return res.docs[0]
+          return res.docs.filter((doc) => doc.data().id === content.id)[0]
         })
-      if (contentType === 'child') {
-        // this.$fire.firestore.collection('site-content').doc(docToUpdate.id).set(
-        //   {
-        //     children: [...content],
-        //   },
-        //   { merge: true }
-        // )
-        let childToUpdate = contentToUpdate
-          .filter((el) => el.name === elementName)[0]
-          .children.filter((child) => {
-            return child.id === content.id
-          })
-        childToUpdate = {...content};
-        console.log(childToUpdate)
-        console.log(contentToUpdate)
-      }
-      return //console.log('doc data: ', docToUpdate.data())
       this.$fire.firestore
         .collection('site-content')
-        .doc(docToUpdate.id)
-        .update({ contentToUpdate })
+        .doc(docId)
+        .collection('children')
+        .doc(childToUpdate.id)
+        .update(content)
         .then((res) => {
-          this.editableElements.forEach((el) => {
-            if (el.name === elementName) el.content = contentToUpdate
+          this.activeElement.children.forEach((child) => {
+            if (child.id === content.id) {
+              child = { ...content }
+              // this.editMode = false;
+              this.$forceUpdate()
+            }
           })
         })
         .catch((err) => {
@@ -109,7 +116,6 @@ export default {
           this.editableElements = res.docs.map((doc) => {
             return doc.data()
           })
-          console.log(this.editableElements);
         }
       })
       .catch((err) => {
@@ -133,6 +139,9 @@ export default {
   background-color: #fafafa;
   height: 100%;
   flex: 1;
+}
+.active-element h4 {
+  font-weight: normal;
 }
 .list-of-elements {
   list-style-type: none;
@@ -159,6 +168,17 @@ export default {
 .active-element_title {
   font-size: 20px;
   padding: 18px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.action-btn {
+  padding: 8px 12px;
+  color: #fafafa;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background-color: #ffaa06;  
 }
 </style>
 <style>
