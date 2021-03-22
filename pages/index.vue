@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <Header />
-    <Main :portfolio="portfolio" />
+    <Main :portfolio="portfolio" :slides="slides" />
     <Footer />
     <ToTopButton />
   </div>
@@ -24,48 +24,44 @@ export default {
   data() {
     return {
       portfolio: [],
+      slides: []
     }
   },
   beforeCreate() {
+    // this.$fire.firestore
+    //   .collection('portfolio')
+    //   .get()
+    //   .then((ress) => {
+    //     if (ress.docs.length)
+    //       this.portfolio = ress.docs.map((doc) => {
+    //         return doc.data()
+    //       })
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
     this.$fire.firestore
-      .collection('portfolio')
+      .collection('site-content')
+      .where('name', '==', 'slider')
       .get()
-      .then((ress) => {
-        if (ress.docs.length)
-          this.portfolio = ress.docs.map((doc) => {
-            return doc.data()
-          })
+      .then((res) => {
+        if (res.docs.length) {
+          this.$fire.firestore
+            .collection('site-content')
+            .doc(res.docs[0].id)
+            .collection('children')
+            .get()
+            .then((res) => {
+              this.slides = res.docs.filter(doc => doc.data().enabled && !doc.data().removed).map(doc => doc.data());
+            })
+          // this.editableElements = res.docs.map((doc) => {
+          //   return doc.data()
+          // })
+        }
       })
       .catch((err) => {
         console.log(err)
       })
-
-    // const collectionPath = this.$fire.database.ref('portfolio');
-    // console.log(firebase.default.database().ref('portfolio'));
-    // const messageRef = this.$fireDb.ref('cases') // Where 'cases' is the json object
-    // Axios.get(messageRef.toString() + '.json').then(response => {
-    // console.log(response.data)
-    // })
-    // }
-    // }
-    // console.log(firebase)
-    // console.log(this.$fire.database.ref('portfolio'))
-    // axios
-    //   .get(collectionPath)
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // axios
-    //   .get('data/staticData.json')
-    //   .then((res) => {
-    //     this.portfolio = res.data.portfolio;
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
   },
   mounted() {
     // console.log(this.$fire.database);

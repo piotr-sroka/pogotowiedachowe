@@ -27,7 +27,7 @@
       </header>
       <div class="active-element_childrens" v-if="activeElement.children">
         <EditableChild
-          v-for="child in activeElement.children"
+          v-for="child in activeElementChildren"
           :key="child.description"
           :editableChild="child"
           :saveContent="
@@ -53,6 +53,11 @@ export default {
       editableElements: null,
     }
   },
+  computed: {
+    activeElementChildren() {
+      return this.activeElement.children.filter((child) => !child.removed)
+    },
+  },
   methods: {
     async loadActiveElement(element) {
       const activeElementDocId = await this.$fire.firestore
@@ -67,9 +72,11 @@ export default {
         .orderBy('displayOrder', 'asc')
         .get()
         .then((res) => res.docs)
-      element.children = elementChildren.map((child) => {
-        return child.data()
-      })
+      element.children = elementChildren
+        .filter((child) => !child.data().removed)
+        .map((child) => {
+          return child.data()
+        })
       this.activeElement = element
     },
     async saveContent(elementName, content, contentType) {
@@ -84,7 +91,9 @@ export default {
         .collection('children')
         .get()
         .then((res) => {
-          return res.docs.filter((doc) => doc.data().id === content.id)[0]
+          return res.docs.filter(
+            (doc) => doc.data().displayOrder === content.displayOrder
+          )[0]
         })
       this.$fire.firestore
         .collection('site-content')
@@ -93,10 +102,14 @@ export default {
         .doc(childToUpdate.id)
         .update(content)
         .then((res) => {
-          this.activeElement.children.forEach((child) => {
-            if (child.id === content.id) {
-              child = { ...content }
-              // this.editMode = false;
+          this.activeElement.children.forEach((child, index) => {
+            if (child.displayOrder === content.displayOrder) {
+              for (let prop in child) {
+                child[prop] = content[prop]
+              }
+              let currentActiveElement = {...this.activeElement};
+              this.activeElement = null;
+              this.activeElement = {...currentActiveElement};
               this.$forceUpdate()
             }
           })
@@ -104,6 +117,14 @@ export default {
         .catch((err) => {
           console.log(err)
         })
+    },
+  },
+  watch: {
+    activeElement: {
+      deep: true,
+      handler(oldV, newV) {
+        console.log(oldV, newV)
+      },
     },
   },
   beforeCreate() {
@@ -178,7 +199,7 @@ export default {
   cursor: pointer;
   border: none;
   outline: none;
-  background-color: #ffaa06;  
+  background-color: #ffaa06;
 }
 </style>
 <style>

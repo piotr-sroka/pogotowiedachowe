@@ -2,7 +2,7 @@
   <div class="slider" :style="sliderStyle">
     <div class="slide" :class="isChanging ? 'slide-changing' : ''">
       <h3 class="slide-headline">
-        {{ currentSlide.headline.replace(/-/gi, '&#8209;') }}
+        {{ currentSlide.title.replace(/-/gi, '&#8209;') }}
       </h3>
       <p class="slide-description">
         {{ currentSlide.description.replace(/-/gi, '&#8209;') }}
@@ -26,7 +26,7 @@ export default {
     },
     sliderStyle() {
       return {
-        '--slide-bg': `url(${this.currentSlide.image})`,
+        '--slide-bg': `url(${this.currentSlide.images[0]})`,
       }
     },
   },
@@ -62,10 +62,12 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.isChanging = true
-    }, this.sliderTimer * 1000)
-    setTimeout(this.changeSlide, this.sliderTimer * 1000 + 400)
+    if (this.slides.length > 1) {
+      setTimeout(() => {
+        this.isChanging = true
+      }, this.sliderTimer * 1000)
+      setTimeout(this.changeSlide, this.sliderTimer * 1000 + 400)
+    }
   },
 }
 </script>

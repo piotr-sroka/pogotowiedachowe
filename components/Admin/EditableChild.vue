@@ -1,8 +1,9 @@
 <template>
-  <div class="editable-child" :class="editMode ? 'edit-mode' : ''">
+  <div class="editable-child" :class="getEditMode">
     <div
       class="child-images"
       v-if="editedChild.images && editedChild.images.length"
+      :class="getDisabled"
     >
       <img
         class="child-image"
@@ -12,7 +13,7 @@
         alt=""
       />
     </div>
-    <div v-if="!editMode">
+    <div v-if="!editMode" class="child-text" :class="getDisabled">
       <h4 class="child-title" :key="editedChild.title" v-if="editedChild.title">
         {{ editedChild.title }}
       </h4>
@@ -24,7 +25,7 @@
         {{ editedChild.description }}
       </p>
     </div>
-    <div v-else>
+    <div v-else class="child-text" :class="getDisabled">
       <textarea
         class="child-title"
         v-model="editedChild.title"
@@ -39,24 +40,27 @@
         <button class="action-button action-cancel" @click="discardChanges">
           Anuluj
         </button>
-        <button
-          class="action-button action-save"
-          @click="saveChanges"
-        >
+        <button class="action-button action-save" @click="saveChanges">
           Zapisz
         </button>
       </div>
     </div>
     <div class="options">
-      <button class="option-btn edit" title="Edytuj" @click="editMode = true">
+      <button
+        class="option-btn edit"
+        title="Edytuj"
+        @click="editMode = true"
+        :class="getDisabled"
+      >
         <font-awesome-icon :icon="['fas', 'pen']" />
       </button>
-      <button class="option-btn remove" title="Usuń">
+      <button class="option-btn remove" title="Usuń" @click="remove">
         <font-awesome-icon :icon="['fas', 'trash']" />
       </button>
       <button
         class="option-btn activate"
         :title="editedChild.enabled ? 'Deaktywuj' : 'Aktywuj'"
+        @click="toggleActive"
       >
         <font-awesome-icon
           :icon="['fas', editedChild.enabled ? 'toggle-on' : 'toggle-off']"
@@ -67,7 +71,7 @@
 </template>
 <script>
 export default {
-  props: ['editableChild', 'saveContent'],
+  props: ['editableChild', 'saveContent', 'removeContent'],
   data() {
     return {
       editMode: false,
@@ -76,15 +80,47 @@ export default {
   },
   methods: {
     saveChanges() {
-      this.saveContent({ ...this.editedChild });
-      this.editMode = false;
+      this.saveContent({ ...this.editedChild })
+      this.editMode = false
     },
     discardChanges() {
       this.editedChild = { ...this.editableChild }
       this.editMode = false
     },
+    remove() {
+      this.$swal('Are you sure?')
+      const result = this.$swal({
+        title: 'Usuwanie',
+        text: 'Czy na pewno chcesz usunąć ten element?',
+        icon: 'question',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Tak',
+        cancelButtonColor: '#E64A19',
+        cancelButtonText: 'Nie',
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.editedChild.removed = true;
+          this.saveChanges();
+        }
+      })
+    },
+    toggleActive() {
+      this.editedChild.enabled = !this.editedChild.enabled
+      this.saveChanges();
+    },
   },
-  computed: {},
+  computed: {
+    getEditMode() {
+      return this.editMode ? 'edit-mode' : ''
+    },
+    getDisabled() {
+      return this.editedChild.enabled !== undefined &&
+        this.editedChild.enabled === false
+        ? 'disabled'
+        : ''
+    },
+  },
 }
 </script>
 <style scoped>
@@ -94,6 +130,12 @@ export default {
   border-bottom: 1px solid #ffaa06;
   margin-bottom: 40px;
   position: relative;
+}
+.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+  user-select: none;
+  cursor: not-allowed;
 }
 .editable-child:nth-child(even) {
   background-color: #ededed;

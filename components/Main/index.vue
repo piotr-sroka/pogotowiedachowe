@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Slider :slides="slides" />
+    <Slider :slides="slides" v-if="slides.length > 0" />
     <AboutUs />
     <Portfolio :portfolio="portfolio" v-on:showGallery="showGallery" />
     <Contact />
@@ -18,7 +18,7 @@ import Contact from './Contact'
 import Gallery from './Portfolio/Gallery'
 
 export default {
-  props: ['portfolio'],
+  props: ['portfolio', 'slides'],
   components: {
     Slider,
     ShortContact,
@@ -29,20 +29,6 @@ export default {
   },
   data() {
     return {
-      slides: [
-        {
-          image: '/images/top_slider_image1.jpg',
-          headline: 'AWARYJNE DACHOWANIE?',
-          description:
-            'Jeżeli potrzebujesz pomocy w wykonaniu dachu lub jego naprawie skontaktuj się z nami - po nas nikt nie poprawia. To my naprawiamy dachy po innych.',
-        },
-        {
-          image: '/images/top_slider_image2.jpg',
-          headline: '15 LAT DOŚWIADCZENIA',
-          description:
-            'Strona w budowie w razie nagłych wypadków proszę o kontakt pod numerem telefonu 783-211-118',
-        },
-      ],
       itemToShow: null,
     }
   },
@@ -65,7 +51,7 @@ export default {
         document.querySelector("body").classList.remove("noscroll");
       }
     }
-  }
+  },
 }
 </script>
 <style scoped>
