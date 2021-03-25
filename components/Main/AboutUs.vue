@@ -1,14 +1,10 @@
 <template>
   <div class="aboutus" id="onas">
+    {{aboutus}}
     <div class="aboutus-content">
       <h3 class="aboutus-headline">O NAS</h3>
       <p class="aboutus-description">
-        Co nas wyróżnia na tle konkurencji? Nam przyświeca jedna zasada. Albo
-        robić coś dobrze, albo w ogóle tego nie robić. Nie tolerujemy
-        pół-środków. Inwestujemy w profesjonalny sprzęt. Stawiamy na jakość,
-        ponieważ ona kształtuje naszą markę i buduje zaufanie Klienta. Dbamy o
-        każdy szczegół i wciąż podnosimy standardy pracy. To jest Twój dach, to
-        jest Twój dom.
+        {{aboutus.description}}
       </p>
       <div class="aboutus-content_boxes">
         <div class="box">
@@ -45,7 +41,9 @@
   </div>
 </template>
 <script>
-export default {}
+export default {
+  props: ["aboutus"]
+}
 </script>
 <style scoped>
 .aboutus {

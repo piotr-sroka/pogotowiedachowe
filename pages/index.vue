@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <Header />
-    <Main :portfolio="portfolio" :slides="slides" />
+    <Main :aboutus="aboutus" :portfolio="portfolio" :slides="slides" />
     <Footer />
     <ToTopButton />
   </div>
@@ -24,22 +24,11 @@ export default {
   data() {
     return {
       portfolio: [],
-      slides: []
+      slides: [],
+      aboutus: [],
     }
   },
   beforeCreate() {
-    // this.$fire.firestore
-    //   .collection('portfolio')
-    //   .get()
-    //   .then((ress) => {
-    //     if (ress.docs.length)
-    //       this.portfolio = ress.docs.map((doc) => {
-    //         return doc.data()
-    //       })
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
     this.$fire.firestore
       .collection('site-content')
       .where('name', '==', 'slider')
@@ -52,19 +41,55 @@ export default {
             .collection('children')
             .get()
             .then((res) => {
-              this.slides = res.docs.filter(doc => doc.data().enabled && !doc.data().removed).map(doc => doc.data());
+              this.slides = res.docs
+                .filter((doc) => doc.data().enabled && !doc.data().removed)
+                .map((doc) => doc.data())
             })
-          // this.editableElements = res.docs.map((doc) => {
-          //   return doc.data()
-          // })
         }
       })
       .catch((err) => {
         console.log(err)
       })
-  },
-  mounted() {
-    // console.log(this.$fire.database);
+    this.$fire.firestore
+      .collection('site-content')
+      .where('name', '==', 'portfolio')
+      .get()
+      .then((res) => {
+        if (res.docs.length) {
+          this.$fire.firestore
+            .collection('site-content')
+            .doc(res.docs[0].id)
+            .collection('children')
+            .get()
+            .then((res) => {
+              this.portfolio = res.docs
+                .filter((doc) => doc.data().enabled && !doc.data().removed)
+                .map((doc) => doc.data())
+            })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    this.$fire.firestore
+      .collection('site-content')
+      .where('name', '==', 'aboutus')
+      .get()
+      .then((res) => {
+        if (res.docs.length) {
+          this.$fire.firestore
+            .collection('site-content')
+            .doc(res.docs[0].id)
+            .collection('children')
+            .get()
+            .then((res) => {
+              this.aboutus = res.docs.map((doc) => doc.data())[0]
+            })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   },
 }
 </script>

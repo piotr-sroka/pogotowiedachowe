@@ -43,12 +43,18 @@ import Logo from '../components/Logo'
 import EditableChild from '../components/Admin/EditableChild'
 
 export default {
+  head() {
+    return {
+      title: this.title,
+    }
+  },
   components: {
     Logo,
     EditableChild,
   },
   data() {
     return {
+      title: `Panel Administracyjny - ${this.$root.$meta().refresh().metaInfo.title}`,
       activeElement: null,
       editableElements: null,
     }
@@ -107,9 +113,9 @@ export default {
               for (let prop in child) {
                 child[prop] = content[prop]
               }
-              let currentActiveElement = {...this.activeElement};
-              this.activeElement = null;
-              this.activeElement = {...currentActiveElement};
+              let currentActiveElement = { ...this.activeElement }
+              this.activeElement = null
+              this.activeElement = { ...currentActiveElement }
               this.$forceUpdate()
             }
           })

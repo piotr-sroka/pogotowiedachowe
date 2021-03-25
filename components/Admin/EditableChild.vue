@@ -2,7 +2,7 @@
   <div class="editable-child" :class="getEditMode">
     <div
       class="child-images"
-      v-if="editedChild.images && editedChild.images.length"
+      v-if="editedChild.images && editedChild.images.length && !editMode"
       :class="getDisabled"
     >
       <img
@@ -12,6 +12,25 @@
         :key="image"
         alt=""
       />
+    </div>
+    <div
+      class="child-image_edit"
+      v-if="editedChild.images && editedChild.images.length && editMode"
+    >
+      <div
+        v-for="(image, index) in editedChild.images"
+        :key="image"
+        class="image-file_select"
+        @drop.prevent.stop="(e) => onDrop(e, editedChild, index)"
+        @dragover.prevent.stop="onDragEnter"
+        @dragleave.prevent.stop="onDragLeave"
+      >
+        <img class="child-image" :src="image" alt="" />
+        <label for="file-select" class="file-select_label"
+          >Wybierz zdjęcie lub przeciągnij je tutaj</label
+        >
+        <input type="file" id="file-select" class="file-select_input" />
+      </div>
     </div>
     <div v-if="!editMode" class="child-text" :class="getDisabled">
       <h4 class="child-title" :key="editedChild.title" v-if="editedChild.title">
@@ -86,6 +105,7 @@ export default {
     discardChanges() {
       this.editedChild = { ...this.editableChild }
       this.editMode = false
+      this.$forceUpdate();
     },
     remove() {
       this.$swal('Are you sure?')
@@ -100,14 +120,34 @@ export default {
         cancelButtonText: 'Nie',
       }).then((res) => {
         if (res.isConfirmed) {
-          this.editedChild.removed = true;
-          this.saveChanges();
+          this.editedChild.removed = true
+          this.saveChanges()
         }
       })
     },
     toggleActive() {
       this.editedChild.enabled = !this.editedChild.enabled
-      this.saveChanges();
+      this.saveChanges()
+    },
+    onDragEnter(e) {
+      e.currentTarget.classList.add('dragover')
+    },
+    onDragLeave(e) {
+      e.currentTarget.classList.remove('dragover')
+    },
+    onDrop(e, child, index) {
+      e.currentTarget.classList.remove('dragover')
+      const droppedFiles = Array.from(e.target.files || e.dataTransfer.files)
+      const oneImageFile = droppedFiles.filter(
+        (file) => file.type === 'image/jpeg' || file.type === 'image/png'
+      )[0]
+      console.log(oneImageFile)
+      let fr = new FileReader()
+      fr.onload = () => {
+        child.images[index] = fr.result
+        this.$forceUpdate()
+      }
+      fr.readAsDataURL(oneImageFile)
     },
   },
   computed: {
@@ -140,9 +180,13 @@ export default {
 .editable-child:nth-child(even) {
   background-color: #ededed;
 }
+.child-images {
+  margin-bottom: 12px;
+}
 .child-image {
-  max-height: 120px;
-  max-width: 200px;
+  height: 180px;
+  width: 320px;
+  object-fit: cover;
 }
 .options {
   position: absolute;
@@ -194,5 +238,51 @@ textarea {
 }
 .action-cancel {
   background-color: #8d021f;
+}
+.child-image_edit {
+  width: 320px;
+  height: 180px;
+  object-fit: cover;
+  margin-bottom: 12px;
+  position: relative;
+}
+.child-image_edit .child-image {
+  position: absolute;
+  pointer-events: none;
+}
+.image-file_select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 999;
+}
+.file-select_input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.file-select_label {
+  color: #fafafa;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background-color: rgba(31, 32, 41, 0.6);
+  transition: all 0.2s ease-out;
+}
+.image-file_select .file-select_label:hover,
+.image-file_select.dragover .file-select_label {
+  background-color: rgba(255, 170, 6, 0.5);
 }
 </style>

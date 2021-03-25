@@ -1,7 +1,7 @@
 <template>
   <main>
     <Slider :slides="slides" v-if="slides.length > 0" />
-    <AboutUs />
+    <AboutUs :aboutus="aboutus" />
     <Portfolio :portfolio="portfolio" v-on:showGallery="showGallery" />
     <Contact />
     <transition name="galleryShow">
@@ -18,7 +18,7 @@ import Contact from './Contact'
 import Gallery from './Portfolio/Gallery'
 
 export default {
-  props: ['portfolio', 'slides'],
+  props: ['portfolio', 'slides', 'aboutus'],
   components: {
     Slider,
     ShortContact,
