@@ -17,6 +17,13 @@
       </li>
       <li @click="toggleMenu">
         <nuxt-link
+          :to="{ path: '/', hash: 'referencje' }"
+          v-scroll-to="{ el: '#referencje' }"
+          >Referencje</nuxt-link
+        >
+      </li>
+      <li @click="toggleMenu">
+        <nuxt-link
           :to="{ path: '/', hash: 'kontakt' }"
           v-scroll-to="{ el: '#kontakt' }"
           >Kontakt</nuxt-link
@@ -32,18 +39,31 @@
 </template>
 <script>
 export default {
-    data: function() {
-        return {
-            clicked: false
-        }
-    },
-    methods: {
-      toggleMenu() {
-        if (window.matchMedia('(max-width: 720px)').matches) {
-          this.clicked = false;
-        }
-      }
+  data: function () {
+    return {
+      clicked: false,
+      menuItems: [],
     }
+  },
+  methods: {
+    toggleMenu() {
+      if (window.matchMedia('(max-width: 720px)').matches) {
+        this.clicked = false
+      }
+    },
+  },
+  beforeCreate() {
+    // this.$fire.firestore
+    //   .collection('site-content')
+    //   .get()
+    //   .then((res) => {
+    //     res.docs.map((doc) => {
+    //       this.menuItems = res.docs.map((doc) => {
+    //         return doc.data()
+    //       })
+    //     })
+    //   })
+  },
 }
 </script>
 <style scoped>
@@ -76,7 +96,7 @@ export default {
   align-items: center;
   justify-content: center;
   color: #fafafa;
-  transition: all .4s ease-in-out;
+  transition: all 0.4s ease-in-out;
   cursor: pointer;
   letter-spacing: 1.5px;
 }
@@ -115,7 +135,7 @@ export default {
   background-color: #ffaa06;
   margin: 5px 0;
   transform-origin: center center;
-  transition: transform .2s linear;
+  transition: transform 0.2s linear;
 }
 
 @media screen and (max-width: 860px) {
@@ -133,28 +153,28 @@ export default {
     left: 0;
     display: block;
     background-color: #2d303b;
-    transition: height .2s linear;
+    transition: height 0.2s linear;
   }
   .menu.opened .menu-list {
-      height: 180px;
+    height: 180px;
   }
   .menu.menu.opened .menu-toggle {
-      margin-top: 28px;
+    margin-top: 28px;
   }
   .menu.opened .menu-toggle__bar {
-      margin: 0;
-      position: absolute;
-      top: 0;
-      left: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
   .menu.opened .menu-toggle .menu-toggle__bar:nth-child(1) {
-      transform: rotate(-45deg);
+    transform: rotate(-45deg);
   }
   .menu.opened .menu-toggle .menu-toggle__bar:nth-child(2) {
-      transform: rotate(45deg);
+    transform: rotate(45deg);
   }
   .menu.opened .menu-toggle .menu-toggle__bar:nth-child(3) {
-      display: none;
+    display: none;
   }
   .menu-list li {
     width: 100%;

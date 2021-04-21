@@ -1,10 +1,10 @@
 <template>
-  <div class="portfolio" id="realizacje">
-    <div class="portfolio-content">
-      <h4>NASZE REALIZACJE</h4>
-      <div class="portfolio-items">
-        <PortfolioItem
-          v-for="item in portfolio"
+  <div class="references" id="referencje">
+    <div class="references-content">
+      <h4>REFERENCJE</h4>
+      <div class="references-items">
+        <ReferencesItem
+          v-for="item in references"
           :key="item.id"
           :item="item"
           v-on:showGallery="showGallery"
@@ -14,30 +14,30 @@
   </div>
 </template>
 <script>
-import PortfolioItem from './PortfolioItem'
+import ReferencesItem from './ReferencesItem'
 import Gallery from '../Gallery'
 
 export default {
   components: {
-    PortfolioItem,
+    ReferencesItem,
     Gallery,
   },
-  props: ['portfolio'],
+  props: ['references'],
   methods: {
     showGallery(e) {
       this.$emit("showGallery", e);
     }
   },
   mounted() {
-    // console.log(this.portfolio)
+    // console.log(this.references)
   },
 }
 </script>
 <style scoped>
-.portfolio {
+.references {
   position: relative;
 }
-.portfolio-content::after {
+.references-content::after {
   content: '';
   position: absolute;
   top: 0;
@@ -45,17 +45,17 @@ export default {
   height: 1px;
   border-top: 1px solid #ffaa06;
 }
-.portfolio-content {
+.references-content {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
-.portfolio-content > div {
+.references-content > div {
   width: 100%;
 }
-.portfolio-content > h4 {
+.references-content > h4 {
   font-size: 2em;
   margin: 0 auto;
   margin-bottom: 24px;
@@ -64,7 +64,7 @@ export default {
   max-width: 480px;
   text-align: center;
 }
-.portfolio-items {
+.references-items {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

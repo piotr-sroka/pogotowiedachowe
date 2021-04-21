@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <Header />
-    <Main :aboutus="aboutus" :portfolio="portfolio" :slides="slides" />
+    <Main :aboutus="aboutus" :portfolio="portfolio" :references="references" :slides="slides" />
     <Footer />
     <ToTopButton />
   </div>
@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       portfolio: [],
+      references: [],
       slides: [],
       aboutus: [],
     }
@@ -63,6 +64,28 @@ export default {
             .get()
             .then((res) => {
               this.portfolio = res.docs
+                .filter((doc) => doc.data().enabled && !doc.data().removed)
+                .map((doc) => doc.data())
+            })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      
+    this.$fire.firestore
+      .collection('site-content')
+      .where('name', '==', 'references')
+      .get()
+      .then((res) => {
+        if (res.docs.length) {
+          this.$fire.firestore
+            .collection('site-content')
+            .doc(res.docs[0].id)
+            .collection('children')
+            .get()
+            .then((res) => {
+              this.references = res.docs
                 .filter((doc) => doc.data().enabled && !doc.data().removed)
                 .map((doc) => doc.data())
             })
